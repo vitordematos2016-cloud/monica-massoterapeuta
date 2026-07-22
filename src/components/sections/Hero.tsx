@@ -62,8 +62,8 @@ export function Hero() {
           </div>
 
           <div className="relative mx-auto w-full max-w-[260px] sm:max-w-xs lg:max-w-none">
-            <div className="absolute -inset-4 rounded-[2.5rem] bg-terracotta/15 blob-shape animate-breathe" aria-hidden="true" />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl">
+            <div className="absolute -inset-4 bg-terracotta/15 blob-shape animate-breathe" aria-hidden="true" />
+            <div className="relative aspect-[4/5] overflow-hidden shadow-2xl blob-shape">
               <img
                 src={monicaHeroPhoto}
                 alt="Mônica Nunes, massoterapeuta"
@@ -71,7 +71,7 @@ export function Hero() {
                 height={1250}
                 loading="eager"
                 fetchPriority="high"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover object-[center_18%]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-olive-dark/35 via-transparent to-transparent" />
             </div>

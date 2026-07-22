@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.0] - Foto do Hero com recorte orgânico real
+
+- A foto do Hero deixou de usar um retângulo de cantos arredondados (`rounded-[2.5rem]`) e
+  passou a usar exatamente a mesma máscara orgânica e assimétrica (`blob-shape`) já usada nos
+  elementos decorativos do site — sem cantos retos, sem fundo branco, sem card visível ao redor
+  da fotografia.
+- Foto recortada novamente (menos "zoom", mais margem nas laterais e embaixo) para que o rosto
+  e as mãos cruzadas fiquem confortavelmente dentro da área visível da máscara orgânica, mesmo
+  com o corte mais acentuado que ela faz nos cantos.
+
 ## [0.6.0] - Identidade "Mônica Nunes / Massoterapeuta" e ajustes finos de fotos
 
 - Adicionado "Massoterapeuta" logo abaixo de "Mônica Nunes" em três lugares: logotipo do
