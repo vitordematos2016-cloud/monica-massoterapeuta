@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.1] - Correção crítica: WhatsApp não abria ao enviar a solicitação
+
+- O envio pelo WhatsApp tinha um atraso artificial (`setTimeout` de 500ms/300ms) entre o clique
+  do visitante e a chamada de `window.open()`, usado só para exibir um estado visual de
+  "processando". Isso quebrava a abertura em navegadores reais: Chrome, Safari e Firefox só
+  permitem `window.open()` sem bloqueio de pop-up quando ele é chamado de forma síncrona, como
+  reação direta ao clique — depois de qualquer atraso, o navegador deixa de reconhecer isso como
+  gesto do usuário e bloqueia a aba silenciosamente, sem erro visível.
+- Corrigido chamando `window.open()` imediatamente, sem nenhum atraso antes. O estado visual de
+  "processando" foi removido (não fazia mais sentido, já que não há nada assíncrono para
+  esperar antes de abrir o WhatsApp).
+- O fallback "Tentar novamente" / "Copiar mensagem" continua funcionando normalmente para os
+  casos em que o navegador ainda assim bloquear a aba.
+
 ## [1.1.0] - Reorganização completa do agendamento e da mensagem do WhatsApp
 
 - **Etapa "Revisar e agendar" renomeada e reorganizada**: título "Revise e solicite seu

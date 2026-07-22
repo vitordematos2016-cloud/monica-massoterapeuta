@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
-import { Copy, Check, Loader2, Send } from 'lucide-react'
+import { Copy, Check, Send } from 'lucide-react'
 import { getTodayIsoDate, isPastDate } from '../../utils/dateValidation'
 import { buildBookingMessage, buildWhatsAppUrl } from '../../utils/whatsapp'
 import { isValidBrazilianPhone, isValidFullName } from '../../utils/formatters'
@@ -13,7 +13,7 @@ const PERIOD_OPTIONS: { value: Exclude<BookingFormData['preferredPeriod'], ''>; 
   { value: 'noite', label: 'Fim de tarde/noite' },
 ]
 
-type Phase = 'idle' | 'processing' | 'success' | 'failed'
+type Phase = 'idle' | 'success' | 'failed'
 
 interface FieldErrors {
   name?: string
@@ -61,38 +61,36 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
   }
 
   const liveErrors = validate()
-  const canSubmit =
-    Object.keys(liveErrors).length === 0 && consent && services.length > 0 && phase !== 'processing'
+  const canSubmit = Object.keys(liveErrors).length === 0 && consent && services.length > 0
 
-  async function openWhatsApp(message: string): Promise<boolean> {
+  function openWhatsApp(message: string): boolean {
+    // Precisa ser chamado de forma síncrona, sem nenhum await/setTimeout antes,
+    // como reação direta ao clique — do contrário os navegadores (Chrome, Safari,
+    // Firefox) deixam de reconhecer isso como resultado de um gesto do usuário e
+    // bloqueiam a abertura como pop-up, silenciosamente.
     const win = window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
     return Boolean(win)
   }
 
-  async function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setSubmitAttempted(true)
     const errors = validate()
     setFieldErrors(errors)
     if (Object.keys(errors).length > 0 || !consent || services.length === 0) return
 
-    setPhase('processing')
     const message = buildBookingMessage(
       { ...currentData, name: name.trim(), phone: phone.trim(), notes: notes.trim() },
       serviceNames,
     )
     setPendingMessage(message)
 
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    const opened = await openWhatsApp(message)
+    const opened = openWhatsApp(message)
     setPhase(opened ? 'success' : 'failed')
   }
 
-  async function handleRetry() {
-    setPhase('processing')
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    const opened = await openWhatsApp(pendingMessage)
+  function handleRetry() {
+    const opened = openWhatsApp(pendingMessage)
     setPhase(opened ? 'success' : 'failed')
   }
 
@@ -224,17 +222,8 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
             disabled={!canSubmit}
             className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-full bg-olive px-6 text-sm font-medium text-cream transition-all duration-300 hover:bg-olive-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {phase === 'processing' ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                Preparando solicitação…
-              </>
-            ) : (
-              <>
-                <Send size={18} />
-                Enviar solicitação pelo WhatsApp
-              </>
-            )}
+            <Send size={18} />
+            Enviar solicitação pelo WhatsApp
           </button>
           <button
             type="button"
