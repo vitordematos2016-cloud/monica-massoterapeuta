@@ -1,9 +1,23 @@
 import { useRef } from 'react'
-import { MessageCircleHeart, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MessageCircleHeart, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../ui/Reveal'
 import { testimonials } from '../../data/testimonials'
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5" aria-label={`${rating} de 5 estrelas`}>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <Star
+          key={index}
+          size={15}
+          className={index < rating ? 'fill-terracotta text-terracotta' : 'text-sand-dark'}
+        />
+      ))}
+    </div>
+  )
+}
 
 export function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null)
@@ -40,7 +54,12 @@ export function Testimonials() {
     <section id="avaliacoes" className="bg-cream py-20 sm:py-28">
       <Container>
         <div className="flex items-end justify-between gap-4">
-          <SectionHeading align="left" eyebrow="Avaliações" title="Feedbacks que amamos receber" />
+          <SectionHeading
+            align="left"
+            eyebrow="Avaliações"
+            title="Feedbacks que amamos receber"
+            description="5,0 de média em 70 avaliações reais no Google."
+          />
           <div className="hidden shrink-0 gap-2 sm:flex">
             <button
               type="button"
@@ -71,10 +90,18 @@ export function Testimonials() {
             <div
               key={testimonial.id}
               data-card
-              className="w-[85%] shrink-0 rounded-3xl bg-sand p-6 sm:w-[380px]"
+              className="flex w-[85%] shrink-0 flex-col rounded-3xl bg-sand p-6 sm:w-[380px]"
             >
-              <p className="text-ink-soft leading-relaxed">"{testimonial.text}"</p>
-              <p className="mt-4 font-serif text-olive-dark">{testimonial.authorName}</p>
+              <StarRating rating={testimonial.rating} />
+              <p className="mt-3 flex-1 text-ink-soft leading-relaxed">"{testimonial.text}"</p>
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <p className="font-serif text-olive-dark">{testimonial.authorName}</p>
+                {testimonial.source === 'google' && (
+                  <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-ink-soft/50">
+                    Google
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>

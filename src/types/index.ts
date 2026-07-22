@@ -42,6 +42,7 @@ export interface Testimonial {
   id: string
   authorName: string
   text: string
+  rating: 1 | 2 | 3 | 4 | 5
   source: 'google' | 'instagram' | 'facebook' | 'presencial'
 }
 
