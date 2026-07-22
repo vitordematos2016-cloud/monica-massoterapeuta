@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.2] - Endereço correto confirmado pela cliente
+
+- Substituído o endereço do site antigo ("Rua Antônio Rici - Estância Suíça") pelo endereço
+  correto e atual, confirmado pela cliente conforme o cadastro no Google: **Rua Padre João
+  Batista Lavello, 107 - Centro, Serra Negra - SP, 13930-095**.
+- Atualizado em `siteConfig.ts` (incluindo novo campo `zipCode`), no JSON-LD (`streetAddress` +
+  `postalCode`) e refletido automaticamente na seção Localização e no Rodapé.
+
 ## [0.9.1] - Coordenadas reais no mapa da Localização
 
 - Adicionadas as coordenadas reais confirmadas pela cliente

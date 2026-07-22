@@ -55,15 +55,15 @@ e usei 5 avaliações públicas reais (nome, nota em estrelas e texto, sem datas
 - [ ] O Google Meu Negócio tem pelo menos 4 fotos próprias (recepção/fachada e uma foto de
       pedras quentes em atendimento) — ver item 1, pode ajudar a resolver a falta de fotos.
 
-## 2.1 Divergência de endereço encontrada no Google
+## 2.1 Divergência de endereço — ✅ resolvida
 
-O Google Meu Negócio da Mônica informa um endereço **diferente** do que está no site atual:
-**Rua Padre João Batista Lavello, 107, Centro, Serra Negra - SP, 13930-095** (vs. "Rua Antônio
-Rici - Estância Suíça" do site antigo). Pode ser uma mudança de endereço não atualizada no site,
-ou um erro de cadastro em uma das duas fontes.
+A cliente confirmou em 22/07/2026 que o endereço correto e atual é o do Google, **não** o do
+site antigo. Endereço aplicado em todo o site (`siteConfig.ts`, mapa, JSON-LD, Localização,
+Rodapé):
 
-- [ ] **Confirmar com a cliente qual endereço está correto/atual** antes de publicar — o site
-      novo (`src/data/siteConfig.ts`) ainda usa o endereço do site antigo até essa confirmação.
+**Rua Padre João Batista Lavello, 107 - Centro, Serra Negra - SP, 13930-095**
+
+O endereço antigo ("Rua Antônio Rici - Estância Suíça") foi removido de todo o projeto.
 
 ## 3. Confirmações de conteúdo
 
@@ -75,10 +75,8 @@ ou um erro de cadastro em uma das duas fontes.
       (`-22.612817022671564, -46.70073503968954`) e já aplicadas em `siteConfig.ts`, no mapa
       incorporado e no JSON-LD (`geo`). O pino e o botão "Abrir no Google Maps" agora apontam
       para o local exato, sem depender de busca por texto.
-- [ ] **Número do endereço**: "Rua Antônio Rici - Estância Suíça, Serra Negra - SP" ainda não
-      tem número informado no texto exibido no site. Com a coordenada confirmada o mapa já é
-      preciso, mas o texto do endereço fica mais completo com o número/complemento, se a
-      cliente quiser informar.
+- [x] **Endereço e número**: confirmado como "Rua Padre João Batista Lavello, 107 - Centro,
+      Serra Negra - SP, 13930-095" — ver item 2.1.
 - [ ] **Instagram**: confirmar se `@monica_nunes_estetica` continua sendo o perfil correto e
       ativo (o acesso automatizado ao Instagram foi bloqueado durante a auditoria e não pôde
       ser verificado visualmente).

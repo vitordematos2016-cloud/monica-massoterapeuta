@@ -6,15 +6,17 @@ export const siteConfig = {
     'Massoterapia, estética e cuidado personalizado para você desacelerar, aliviar as tensões e recuperar o equilíbrio.',
   city: 'Serra Negra',
   state: 'SP',
-  // Endereço confirmado no site atual, sem número de imóvel informado.
-  // [CONFIRMAR NÚMERO/COMPLEMENTO DO ENDEREÇO COM A CLIENTE]
+  // Endereço confirmado pela cliente conforme cadastro no Google (22/07/2026) —
+  // substitui o endereço do site antigo ("Rua Antônio Rici - Estância Suíça"),
+  // que estava desatualizado.
   address: {
-    street: 'Rua Antônio Rici',
-    neighborhood: 'Estância Suíça',
+    street: 'Rua Padre João Batista Lavello, 107',
+    neighborhood: 'Centro',
     city: 'Serra Negra',
     state: 'SP',
+    zipCode: '13930-095',
     country: 'Brasil',
-    full: 'Rua Antônio Rici - Estância Suíça, Serra Negra - SP, Brasil',
+    full: 'Rua Padre João Batista Lavello, 107 - Centro, Serra Negra - SP, 13930-095',
     // Coordenada real confirmada pela cliente (Google Maps).
     coordinates: { lat: -22.612817022671564, lng: -46.70073503968954 },
   },
