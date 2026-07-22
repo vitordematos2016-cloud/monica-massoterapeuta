@@ -35,21 +35,29 @@ export function Gallery() {
       <Container>
         <SectionHeading eyebrow="Ambiente" title="O espaço que recebe você" />
 
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mx-auto mt-12 grid max-w-sm grid-cols-1 gap-5 sm:max-w-none sm:grid-cols-3 sm:gap-6">
           {galleryImages.map((image, index) => (
-            <Reveal key={image.id} delayMs={(index % 4) * 80}>
-              <button
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                className="block aspect-square w-full overflow-hidden rounded-2xl"
-              >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </button>
+            <Reveal key={image.id} delayMs={index * 100}>
+              <figure className="overflow-hidden rounded-3xl shadow-[0_4px_24px_rgba(43,43,38,0.08)]">
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Ampliar foto: ${image.caption ?? image.alt}`}
+                  className="block aspect-[3/4] w-full overflow-hidden"
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </button>
+                {image.caption && (
+                  <figcaption className="bg-cream px-4 py-3 text-center text-sm text-ink-soft">
+                    {image.caption}
+                  </figcaption>
+                )}
+              </figure>
             </Reveal>
           ))}
         </div>

@@ -1,7 +1,27 @@
 import type { GalleryImage } from '../types'
+import salaAtendimento from '../assets/environment/ambiente-sala-atendimento.webp'
+import detalhesVela from '../assets/environment/ambiente-detalhes-vela.webp'
+import cafeEPlantas from '../assets/environment/ambiente-cafe-plantas.webp'
 
-// Nenhuma fotografia real do ambiente foi encontrada no site atual (apenas um vídeo
-// de banco de imagens genérico). A galeria fica preparada no código, mas vazia,
-// até que fotos reais do espaço sejam recebidas da cliente.
-// [INSERIR FOTOS REAIS DO AMBIENTE] — ver PENDENCIAS_CLIENTE.md.
-export const galleryImages: GalleryImage[] = []
+// Fotografias reais do ambiente, enviadas pela cliente (pasta AMBIENTE).
+// Ordenadas da mais representativa do espaço de atendimento para a mais atmosférica.
+export const galleryImages: GalleryImage[] = [
+  {
+    id: 'sala-atendimento',
+    src: salaAtendimento,
+    alt: 'Sala de atendimento de Mônica Nunes, com maca preparada, painel de bambu e iluminação aconchegante',
+    caption: 'Sala de atendimento',
+  },
+  {
+    id: 'detalhes-vela',
+    src: detalhesVela,
+    alt: 'Detalhe do ambiente com vela acesa, plantas naturais e elementos de relaxamento',
+    caption: 'Detalhes que compõem a experiência',
+  },
+  {
+    id: 'cafe-plantas',
+    src: cafeEPlantas,
+    alt: 'Momento de acolhimento com uma bebida quente entre plantas naturais',
+    caption: 'Um espaço para desacelerar',
+  },
+]

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0] - Galeria do ambiente com fotos reais
+
+- Seção Galeria preenchida com 3 fotos reais do espaço de atendimento, enviadas pela cliente
+  (`src/assets/environment/`), recortadas em 3:4 e otimizadas em WebP.
+- Grid redesenhado especificamente para 3 itens: coluna única no mobile (prioridade da maioria
+  dos visitantes, fotos grandes e fáceis de ver) e 3 colunas equilibradas do tablet para cima —
+  sem espaços vazios, todas do mesmo tamanho.
+- Cada foto ganhou legenda (`figcaption`) e lightbox de ampliação já existente continua
+  funcionando normalmente.
+
 ## [0.7.0] - Foto do Hero com recorte orgânico real
 
 - A foto do Hero deixou de usar um retângulo de cantos arredondados (`rounded-[2.5rem]`) e

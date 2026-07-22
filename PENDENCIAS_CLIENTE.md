@@ -21,10 +21,19 @@ Usados:
 - A terceira foto (blusa terracota) não foi utilizada — mantida disponível como opção reserva
   caso a cliente prefira trocar alguma das duas ou queira usá-la em outra seção futuramente.
 
-### Ainda pendente — Serviços e Galeria
+### ✅ Resolvido — Galeria do ambiente
 
-- [ ] 3 a 8 fotos do ambiente/espaço de atendimento para a Galeria (recepção, sala de massagem,
-      detalhes, materiais/produtos utilizados).
+A cliente enviou 3 fotos reais do ambiente (pasta `AMBIENTE`, 22/07/2026), agora em
+`src/assets/environment/` e exibidas em `src/data/gallery.ts` / seção Galeria, em ordem da mais
+representativa do espaço para a mais atmosférica: sala de atendimento (maca, painel de bambu,
+cortina), detalhe com vela e plantas, e um momento de acolhimento com bebida quente entre
+plantas. Todas recortadas em 3:4 (mesmo tamanho/proporção) para um grid uniforme mobile-first.
+
+- [ ] Opcional: enviar mais 2 a 5 fotos do ambiente (recepção/fachada, outros ângulos da sala)
+      para enriquecer ainda mais a galeria, se desejar.
+
+### Ainda pendente — Fotos dos serviços
+
 - [ ] Fotos de cada um dos 8 serviços, se disponíveis (opcional, mas recomendado). Os cards em
       `src/components/sections/ServiceCard.tsx` ainda usam a composição orgânica temporária
       (gradiente + ícone), claramente marcada com comentário `[INSERIR FOTO REAL]`.
