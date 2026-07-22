@@ -1,0 +1,86 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check secret - FTP_SERVER
+        run: '[ -n "${{ secrets.FTP_SERVER }}" ]'
+
+      - name: Check secret - FTP_USERNAME
+        run: '[ -n "${{ secrets.FTP_USERNAME }}" ]'
+
+      - name: Check secret - FTP_PASSWORD
+        run: '[ -n "${{ secrets.FTP_PASSWORD }}" ]'
+
+      - name: Check secret - FTP_SERVER_DIR
+        run: '[ -n "${{ secrets.FTP_SERVER_DIR }}" ]'
+
+      - name: Diagnose secret formatting (no values printed)
+        env:
+          S: ${{ secrets.FTP_SERVER }}
+          U: ${{ secrets.FTP_USERNAME }}
+          P: ${{ secrets.FTP_PASSWORD }}
+          D: ${{ secrets.FTP_SERVER_DIR }}
+        run: |
+          check() {
+            name="$1"; value="$2"
+            len=${#value}
+            trimmed=$(printf '%s' "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            trimmedlen=${#trimmed}
+            lines=$(printf '%s' "$value" | wc -l)
+            echo "$name: length=$len trimmed_length=$trimmedlen extra_newlines=$lines"
+          }
+          check FTP_SERVER "$S"
+          check FTP_USERNAME "$U"
+          check FTP_PASSWORD "$P"
+          check FTP_SERVER_DIR "$D"
+
+      - name: Normalize FTP inputs
+        id: ftp
+        run: |
+          server="${{ secrets.FTP_SERVER }}"
+          server="${server#ftp://}"
+          server="${server#ftps://}"
+          dir="${{ secrets.FTP_SERVER_DIR }}"
+          case "$dir" in
+            */) ;;
+            *) dir="$dir/" ;;
+          esac
+          case "$dir" in
+            /*) ;;
+            *) dir="/$dir" ;;
+          esac
+          echo "server=$server" >> "$GITHUB_OUTPUT"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy dist/ via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ steps.ftp.outputs.server }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT || '21' }}
+          server-dir: ${{ steps.ftp.outputs.dir }}
+          local-dir: dist/
