@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.9.0] - Carrossel de Avaliações redesenhado (uma avaliação por vez + botões "folha")
+
+- O carrossel de depoimentos deixou de ser uma faixa de cards com rolagem horizontal e passou a
+  mostrar **uma avaliação por vez**, com indicador de posição ("1 de 5") e controles
+  centralizados abaixo do card — nunca mais nas laterais, para não atrapalhar a leitura no
+  celular.
+- Criados botões de navegação com **formato orgânico de folha** (`leaf-btn-prev` /
+  `leaf-btn-next` em `index.css`, `border-radius` assimétrico espelhado entre si), coerente com
+  o `.blob-shape` já usado no resto do site. Área de toque de 48×48px (acima do mínimo de
+  44×44), sem neon, sombra pesada ou aparência genérica.
+- Navegação completa: clique, arraste (swipe) no celular, setas do teclado quando o carrossel
+  está em foco, e loop elegante (da última avaliação volta para a primeira e vice-versa).
+  Anúncio acessível via `aria-live` para leitores de tela.
+- Transição suave (fade) ao trocar de avaliação; largura do card fixa, altura se adapta ao
+  tamanho de cada texto. Nenhum texto, nome ou nota das avaliações reais foi alterado.
+- Botão "Ver todas as avaliações no Google" permanece abaixo dos controles, com espaçamento
+  generoso entre os elementos.
+
 ## [0.8.0] - Galeria do ambiente com fotos reais
 
 - Seção Galeria preenchida com 3 fotos reais do espaço de atendimento, enviadas pela cliente

@@ -1,10 +1,12 @@
-import { useRef } from 'react'
+import { useRef, useState, type KeyboardEvent, type TouchEvent } from 'react'
 import { MessageCircleHeart, ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../ui/Reveal'
 import { testimonials } from '../../data/testimonials'
 import { siteConfig } from '../../data/siteConfig'
+
+const SWIPE_THRESHOLD_PX = 50
 
 function GoogleReviewsButton() {
   return (
@@ -35,15 +37,70 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-export function Testimonials() {
-  const trackRef = useRef<HTMLDivElement>(null)
+interface LeafNavButtonProps {
+  direction: 'prev' | 'next'
+  onClick: () => void
+  label: string
+}
 
-  function scrollByCard(direction: 1 | -1) {
-    const track = trackRef.current
-    if (!track) return
-    const card = track.querySelector('[data-card]') as HTMLElement | null
-    const amount = (card?.offsetWidth ?? 320) + 20
-    track.scrollBy({ left: amount * direction, behavior: 'smooth' })
+function LeafNavButton({ direction, onClick, label }: LeafNavButtonProps) {
+  const Icon = direction === 'prev' ? ChevronLeft : ChevronRight
+  const shapeClass = direction === 'prev' ? 'leaf-btn-prev' : 'leaf-btn-next'
+  const nudgeClass = direction === 'prev' ? 'group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`group flex h-12 w-12 shrink-0 items-center justify-center bg-sand text-olive-dark shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-olive hover:text-cream hover:shadow-md active:translate-y-0 active:scale-95 ${shapeClass}`}
+    >
+      <Icon size={20} className={`transition-transform duration-300 ${nudgeClass}`} />
+    </button>
+  )
+}
+
+export function Testimonials() {
+  const [index, setIndex] = useState(0)
+  const total = testimonials.length
+  const touchStartXRef = useRef<number | null>(null)
+
+  function goPrev() {
+    setIndex((current) => (current - 1 + total) % total)
+  }
+
+  function goNext() {
+    setIndex((current) => (current + 1) % total)
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      goPrev()
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      goNext()
+    }
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    const startX = touchStartXRef.current
+    touchStartXRef.current = null
+    if (startX === null) return
+
+    const endX = event.changedTouches[0]?.clientX ?? startX
+    const delta = endX - startX
+    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return
+
+    if (delta > 0) {
+      goPrev()
+    } else {
+      goNext()
+    }
   }
 
   if (testimonials.length === 0) {
@@ -69,63 +126,53 @@ export function Testimonials() {
     )
   }
 
+  const current = testimonials[index]
+
   return (
     <section id="avaliacoes" className="bg-cream py-20 sm:py-28">
-      <Container>
-        <div className="flex items-end justify-between gap-4">
-          <SectionHeading
-            align="left"
-            eyebrow="Avaliações"
-            title="Feedbacks que amamos receber"
-            description="5,0 de média em 70 avaliações reais no Google."
-          />
-          <div className="hidden shrink-0 gap-2 sm:flex">
-            <button
-              type="button"
-              aria-label="Depoimento anterior"
-              onClick={() => scrollByCard(-1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-sand-dark text-olive-dark transition hover:bg-sand"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              type="button"
-              aria-label="Próximo depoimento"
-              onClick={() => scrollByCard(1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-sand-dark text-olive-dark transition hover:bg-sand"
-            >
-              <ChevronRight size={18} />
-            </button>
+      <Container className="max-w-2xl">
+        <SectionHeading
+          eyebrow="Avaliações"
+          title="Feedbacks que amamos receber"
+          description="5,0 de média em 70 avaliações reais no Google."
+        />
+
+        <div
+          role="group"
+          aria-roledescription="carrossel"
+          aria-label={`Avaliação ${index + 1} de ${total}`}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="mt-12 rounded-3xl bg-sand p-7 outline-none focus-visible:ring-2 focus-visible:ring-olive sm:p-9"
+        >
+          <div key={current.id} className="testimonial-fade">
+            <StarRating rating={current.rating} />
+            <p className="mt-4 text-lg leading-relaxed text-ink-soft">"{current.text}"</p>
+            <div className="mt-5 flex items-center justify-between gap-2">
+              <p className="font-serif text-olive-dark">{current.authorName}</p>
+              {current.source === 'google' && (
+                <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-ink-soft/50">
+                  Google
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        <div
-          ref={trackRef}
-          className="mt-10 flex gap-5 overflow-x-auto scroll-smooth scrollbar-hide pb-2"
-          role="region"
-          aria-label="Carrossel de depoimentos"
-        >
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              data-card
-              className="flex w-[85%] shrink-0 flex-col rounded-3xl bg-sand p-6 sm:w-[380px]"
-            >
-              <StarRating rating={testimonial.rating} />
-              <p className="mt-3 flex-1 text-ink-soft leading-relaxed">"{testimonial.text}"</p>
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <p className="font-serif text-olive-dark">{testimonial.authorName}</p>
-                {testimonial.source === 'google' && (
-                  <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-ink-soft/50">
-                    Google
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="mt-6 text-center text-sm tracking-wide text-ink-soft/60" aria-live="polite">
+          {index + 1} de {total}
+        </p>
 
-        <div className="mt-8 flex justify-center">
+        {total > 1 && (
+          <div className="mt-5 flex items-center justify-center gap-6">
+            <LeafNavButton direction="prev" onClick={goPrev} label="Ver avaliação anterior" />
+            <LeafNavButton direction="next" onClick={goNext} label="Ver próxima avaliação" />
+          </div>
+        )}
+
+        <div className="mt-10 flex justify-center">
           <GoogleReviewsButton />
         </div>
       </Container>
