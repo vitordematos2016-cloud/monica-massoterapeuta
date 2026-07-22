@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.0] - Primeira publicação
+
+- Criado o pipeline de deploy (`.github/workflows/deploy.yml`): build do projeto e envio de
+  `dist/` via FTP ao Hostinger a cada push em `main`.
+- Domínio definitivo aplicado em todo o projeto (meta tags, canonical, JSON-LD, `siteUrl`,
+  `robots.txt`, `sitemap.xml`): `https://monica-massoterapeuta.matossolucoes.com`.
+- Repositório dedicado `vitordematos2016-cloud/monica-massoterapeuta` conectado; `dev` mesclada
+  em `main` e enviada ao GitHub, disparando o primeiro deploy.
+
 ## [0.9.2] - Endereço correto confirmado pela cliente
 
 - Substituído o endereço do site antigo ("Rua Antônio Rici - Estância Suíça") pelo endereço

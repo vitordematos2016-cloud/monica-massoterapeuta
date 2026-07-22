@@ -48,7 +48,7 @@ export const siteConfig = {
   paymentMethods: ['Dinheiro', 'Pix', 'Cartão de débito', 'Cartão de crédito'],
   // Domínio provisório — ajustar para o domínio/subdomínio definitivo antes da publicação.
   // [CONFIRMAR DOMÍNIO DEFINITIVO DE PUBLICAÇÃO]
-  siteUrl: 'https://monica-nunes.matossolucoes.com',
+  siteUrl: 'https://monica-massoterapeuta.matossolucoes.com',
 } as const
 
 export const NAV_LINKS = [

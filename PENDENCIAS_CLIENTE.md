@@ -85,15 +85,23 @@ O endereço antigo ("Rua Antônio Rici - Estância Suíça") foi removido de tod
 - [ ] Confirmar se existem promoções/descontos vigentes (a pergunta do FAQ foi mantida de forma
       genérica, sem valores, pois nenhum valor foi informado no site atual).
 
-## 4. Domínio de publicação
+## 4. Domínio de publicação — ✅ resolvido
 
-- [ ] O domínio usado no código (`monica-nunes.matossolucoes.com`) é provisório. Definir e
-      atualizar o domínio/subdomínio definitivo em `index.html` (meta tags, canonical, JSON-LD)
-      e em `src/data/siteConfig.ts` (`siteUrl`) antes de publicar.
+Domínio atualizado em todo o projeto (meta tags, canonical, JSON-LD, `siteUrl`, `robots.txt`,
+`sitemap.xml`) para **`https://monica-massoterapeuta.matossolucoes.com`**, conforme o
+repositório/destino de publicação confirmado em 22/07/2026.
 
-## 5. Repositório e deploy
+- [ ] Confirmar, após o primeiro deploy, se esse é realmente o endereço final do site no ar
+      (subdomínio pode ter sido nomeado de forma ligeiramente diferente no Hostinger).
 
-- [ ] Criar repositório GitHub dedicado para este projeto (nunca reaproveitar repositório de
-      outro cliente).
-- [ ] Configurar GitHub Secrets de FTP (Hostinger) próprios deste repositório, quando o domínio
-      definitivo for definido.
+## 5. Repositório e deploy — ✅ publicado
+
+- [x] Repositório dedicado: `vitordematos2016-cloud/monica-massoterapeuta` (secrets de FTP já
+      configurados pelo usuário antes da publicação).
+- [x] Pipeline de deploy criado (`.github/workflows/deploy.yml`, build + envio via FTP ao
+      Hostinger).
+- [x] Primeiro "PUBLICAR": `dev` mesclada em `main` e enviada ao GitHub em 22/07/2026,
+      disparando o workflow de deploy.
+- [ ] Confirmar no GitHub (aba Actions) se o workflow rodou com sucesso e se o site já está no
+      ar no domínio final — não há acesso a `gh` CLI neste ambiente para verificar
+      automaticamente.
