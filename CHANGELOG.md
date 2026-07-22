@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0] - Fotos profissionais reais no Hero e Sobre
+
+- Substituídas as composições orgânicas temporárias do Hero e da seção Sobre por 2 retratos
+  profissionais reais de Mônica Nunes, enviados pela cliente (`src/assets/professional/`),
+  otimizados para WebP (~39KB cada, 1000px de largura).
+- Hero ganhou layout em duas colunas no desktop (texto + retrato emoldurado organicamente);
+  no mobile o retrato aparece abaixo do texto/CTAs, mantendo a altura da seção controlada.
+- Seção Sobre passou a exibir o retrato dentro da máscara orgânica já existente no design.
+- Cards de serviço e Galeria continuam com placeholder — aguardando fotos do ambiente e dos
+  atendimentos (ver [PENDENCIAS_CLIENTE.md](./PENDENCIAS_CLIENTE.md)).
+
 ## [0.3.0] - Seleção múltipla de serviços ("Minha seleção") e ajustes de UX
 
 - **Seleção múltipla de serviços**: clicar em "Selecionar serviço" não abre mais o WhatsApp nem

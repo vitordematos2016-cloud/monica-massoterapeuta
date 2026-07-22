@@ -1,6 +1,7 @@
 import { Container } from '../ui/Container'
 import { Reveal } from '../ui/Reveal'
 import { Button } from '../ui/Button'
+import monicaAboutPhoto from '../../assets/professional/monica-about.webp'
 
 // Texto reescrito a partir do depoimento real publicado em monicanunes.com.br,
 // preservando o significado original. Nenhuma formação, especialização ou tempo de
@@ -45,16 +46,16 @@ export function About() {
 
           <Reveal className="order-1 lg:order-2" delayMs={120}>
             <div className="relative mx-auto aspect-[4/5] w-full max-w-md">
-              <div className="absolute inset-0 blob-shape bg-olive/15" />
-              <div className="absolute inset-4 flex items-center justify-center blob-shape bg-olive-dark/95 text-center">
-                {/* [INSERIR FOTO PROFISSIONAL] Fotografia real de Mônica Nunes —
-                    substituir esta composição temporária antes da publicação. */}
-                <span className="px-8 font-serif text-xl italic text-cream/70">
-                  Mônica Nunes
-                  <span className="mt-2 block font-sans text-xs not-italic uppercase tracking-widest text-cream/40">
-                    Massoterapeuta
-                  </span>
-                </span>
+              <div className="absolute inset-0 blob-shape bg-olive/15" aria-hidden="true" />
+              <div className="absolute inset-4 overflow-hidden blob-shape shadow-xl">
+                <img
+                  src={monicaAboutPhoto}
+                  alt="Mônica Nunes, massoterapeuta, sorrindo em seu espaço de atendimento"
+                  width={1000}
+                  height={1214}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="absolute -bottom-5 -right-5 h-24 w-24 rounded-full bg-terracotta/25 blob-shape animate-breathe" />
             </div>

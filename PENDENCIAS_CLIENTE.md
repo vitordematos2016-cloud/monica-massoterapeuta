@@ -4,24 +4,32 @@ Este documento reúne tudo que precisa ser confirmado ou recebido da cliente ant
 o site. Nenhuma dessas pendências é exibida para o visitante final — todas ficam registradas
 apenas neste arquivo e em comentários no código.
 
-## 1. Fotografias (prioridade alta)
+## 1. Fotografias
 
-O site atual (monicanunes.com.br) não possui nenhuma fotografia real de qualidade da
+O site atual (monicanunes.com.br) não possuía nenhuma fotografia real de qualidade da
 profissional, do ambiente ou dos atendimentos — apenas um vídeo de banco de imagens genérico
-no topo da página. Nenhuma foto foi inventada ou gerada artificialmente.
+no topo da página.
 
-Solicitar à cliente:
-- [ ] 1 foto profissional de rosto/meio corpo para a seção "Sobre" (retrato, boa iluminação).
-- [ ] 1 foto para o Hero (retrato ou foto do ambiente em uso).
+### ✅ Resolvido — Hero e Sobre
+
+A cliente enviou 3 retratos profissionais reais (pasta `MONICA MASSOTERAPIA`, 22/07/2026).
+Usados:
+- **Hero** (`src/assets/professional/monica-hero.webp`): retrato de blazer branco, convertido
+  para WebP (1000px, ~39KB) para performance.
+- **Sobre** (`src/assets/professional/monica-about.webp`): retrato sentada, blusa verde,
+  convertido para WebP (1000px, ~39KB).
+- A terceira foto (blusa terracota) não foi utilizada — mantida disponível como opção reserva
+  caso a cliente prefira trocar alguma das duas ou queira usá-la em outra seção futuramente.
+
+### Ainda pendente — Serviços e Galeria
+
 - [ ] 3 a 8 fotos do ambiente/espaço de atendimento para a Galeria (recepção, sala de massagem,
       detalhes, materiais/produtos utilizados).
-- [ ] Fotos de cada um dos 8 serviços, se disponíveis (opcional, mas recomendado).
+- [ ] Fotos de cada um dos 8 serviços, se disponíveis (opcional, mas recomendado). Os cards em
+      `src/components/sections/ServiceCard.tsx` ainda usam a composição orgânica temporária
+      (gradiente + ícone), claramente marcada com comentário `[INSERIR FOTO REAL]`.
 - [ ] Logotipo em arquivo vetorial (SVG/AI) ou PNG em alta resolução, caso exista. Não foi
       encontrado nenhum logotipo no site atual — a versão atual usa apenas o nome estilizado.
-
-Enquanto as fotos não chegam, o código usa composições visuais orgânicas temporárias
-(gradientes e formas em `src/components/sections/Hero.tsx`, `About.tsx` e `ServiceCard.tsx`),
-claramente marcadas com comentários `[INSERIR FOTO ...]`.
 
 ## 2. Depoimentos reais — ✅ resolvido com avaliações do Google
 

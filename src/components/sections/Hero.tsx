@@ -2,11 +2,8 @@ import { MapPin, ChevronDown } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
 import { siteConfig } from '../../data/siteConfig'
+import monicaHeroPhoto from '../../assets/professional/monica-hero.webp'
 
-// [INSERIR FOTO PROFISSIONAL OU DO AMBIENTE] Nenhuma fotografia de qualidade adequada foi
-// encontrada no site atual (apenas um vídeo de banco de imagens genérico). A composição
-// abaixo é temporária — orgânica e elegante — e deve ser substituída por uma fotografia
-// real antes da publicação. Ver PENDENCIAS_CLIENTE.md.
 export function Hero() {
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -15,7 +12,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-[92vh] items-center overflow-hidden bg-olive-dark pt-24 sm:min-h-screen"
+      className="relative flex min-h-[92vh] items-center overflow-hidden bg-olive-dark pt-28 pb-14 sm:min-h-screen sm:pb-0"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-olive/40 blob-shape animate-float-slow" />
@@ -24,31 +21,53 @@ export function Hero() {
       </div>
 
       <Container className="relative z-10">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center gap-2 rounded-full bg-cream/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.15em] text-cream/85 backdrop-blur-sm">
-            Massoterapia &amp; Estética
-          </span>
-
-          <h1 className="mt-6 font-serif text-4xl leading-[1.15] text-cream sm:text-5xl lg:text-6xl">
-            {siteConfig.tagline}
-          </h1>
-
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
-            {siteConfig.subtitle}
-          </p>
-
-          <div className="mt-5 flex items-center gap-2 text-sm text-cream/70">
-            <MapPin size={16} />
-            <span>
-              Atendimento em {siteConfig.city} – {siteConfig.state}
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-cream/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.15em] text-cream/85 backdrop-blur-sm">
+              Massoterapia &amp; Estética
             </span>
+
+            <h1 className="mt-6 font-serif text-4xl leading-[1.15] text-cream sm:text-5xl lg:text-6xl">
+              {siteConfig.tagline}
+            </h1>
+
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
+              {siteConfig.subtitle}
+            </p>
+
+            <div className="mt-5 flex items-center gap-2 text-sm text-cream/70">
+              <MapPin size={16} />
+              <span>
+                Atendimento em {siteConfig.city} – {siteConfig.state}
+              </span>
+            </div>
+
+            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+              <Button onClick={() => scrollTo('agendamento')}>Agendar meu momento</Button>
+              <Button
+                variant="secondary"
+                className="!border-cream/40 !text-cream hover:!bg-cream hover:!text-olive-dark"
+                onClick={() => scrollTo('experiencias')}
+              >
+                Conhecer os cuidados
+              </Button>
+            </div>
           </div>
 
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-            <Button onClick={() => scrollTo('agendamento')}>Agendar meu momento</Button>
-            <Button variant="secondary" className="!border-cream/40 !text-cream hover:!bg-cream hover:!text-olive-dark" onClick={() => scrollTo('experiencias')}>
-              Conhecer os cuidados
-            </Button>
+          <div className="relative mx-auto w-full max-w-[260px] sm:max-w-xs lg:max-w-none">
+            <div className="absolute -inset-4 rounded-[2.5rem] bg-terracotta/15 blob-shape animate-breathe" aria-hidden="true" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl ring-1 ring-cream/10">
+              <img
+                src={monicaHeroPhoto}
+                alt="Mônica Nunes, massoterapeuta"
+                width={1000}
+                height={1063}
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-full object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-olive-dark/35 via-transparent to-transparent" />
+            </div>
           </div>
         </div>
       </Container>
