@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.1] - Coordenadas reais no mapa da Localização
+
+- Adicionadas as coordenadas reais confirmadas pela cliente
+  (`-22.612817022671564, -46.70073503968954`) em `siteConfig.ts`.
+- Mapa incorporado e botão "Abrir no Google Maps" passaram a usar as coordenadas diretamente
+  (em vez de buscar pelo texto do endereço) — corrige o mapa aparecer "pela metade", coberto por
+  um painel de detalhes do local que o Google exibia ao interpretar a busca por texto como uma
+  ficha de estabelecimento.
+- JSON-LD (dados estruturados) ganhou o campo `geo` (`GeoCoordinates`) com a coordenada real,
+  reforçando o SEO local.
+
 ## [0.9.0] - Carrossel de Avaliações redesenhado (uma avaliação por vez + botões "folha")
 
 - O carrossel de depoimentos deixou de ser uma faixa de cards com rolagem horizontal e passou a

@@ -15,6 +15,8 @@ export const siteConfig = {
     state: 'SP',
     country: 'Brasil',
     full: 'Rua Antônio Rici - Estância Suíça, Serra Negra - SP, Brasil',
+    // Coordenada real confirmada pela cliente (Google Maps).
+    coordinates: { lat: -22.612817022671564, lng: -46.70073503968954 },
   },
   phoneDisplay: '(19) 99845-0082',
   whatsappNumber: '5519998450082',

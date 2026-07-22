@@ -71,8 +71,14 @@ ou um erro de cadastro em uma das duas fontes.
       inclusive domingo — mas o Google Meu Negócio da Mônica informa **09:00–17:00** todos os
       dias. São horários diferentes em cada fonte; confirmar qual está correto antes de publicar
       (`src/data/siteConfig.ts`, campo `hours`).
-- [ ] **Endereço**: "Rua Antônio Rici - Estância Suíça, Serra Negra - SP" não tem número
-      informado no site atual. Confirmar número/complemento.
+- [x] **Coordenadas do mapa**: confirmadas pela cliente em 22/07/2026
+      (`-22.612817022671564, -46.70073503968954`) e já aplicadas em `siteConfig.ts`, no mapa
+      incorporado e no JSON-LD (`geo`). O pino e o botão "Abrir no Google Maps" agora apontam
+      para o local exato, sem depender de busca por texto.
+- [ ] **Número do endereço**: "Rua Antônio Rici - Estância Suíça, Serra Negra - SP" ainda não
+      tem número informado no texto exibido no site. Com a coordenada confirmada o mapa já é
+      preciso, mas o texto do endereço fica mais completo com o número/complemento, se a
+      cliente quiser informar.
 - [ ] **Instagram**: confirmar se `@monica_nunes_estetica` continua sendo o perfil correto e
       ativo (o acesso automatizado ao Instagram foi bloqueado durante a auditoria e não pôde
       ser verificado visualmente).

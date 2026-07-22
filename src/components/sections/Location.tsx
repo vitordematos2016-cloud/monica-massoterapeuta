@@ -6,9 +6,10 @@ import { siteConfig } from '../../data/siteConfig'
 import { copyToClipboard } from '../../utils/clipboard'
 import { dispatchLocationMapVisibility } from '../../utils/mapVisibilityEvent'
 
-const mapsQuery = encodeURIComponent(siteConfig.address.full)
-const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`
-const mapsEmbedUrl = `https://maps.google.com/maps?q=${mapsQuery}&output=embed`
+const { lat, lng } = siteConfig.address.coordinates
+const mapsCoordsParam = `${lat},${lng}`
+const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${mapsCoordsParam}`
+const mapsEmbedUrl = `https://maps.google.com/maps?q=${mapsCoordsParam}&z=16&output=embed`
 
 type CopyState = 'idle' | 'copied' | 'error'
 
