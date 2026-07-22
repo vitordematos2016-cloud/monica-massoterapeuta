@@ -1,8 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Copy, Check, Send } from 'lucide-react'
-import { getTodayIsoDate, isPastDate } from '../../utils/dateValidation'
+import { getTodayIsoDate, isValidFutureOrTodayDate } from '../../utils/dateValidation'
 import { buildBookingMessage, buildWhatsAppUrl } from '../../utils/whatsapp'
-import { isValidBrazilianPhone, isValidFullName } from '../../utils/formatters'
+import { isValidBrazilianPhone, isValidName } from '../../utils/formatters'
 import { copyToClipboard } from '../../utils/clipboard'
 import { BookingSummary } from '../booking/BookingSummary'
 import type { BookingFormData, Service } from '../../types'
@@ -19,7 +19,10 @@ interface FieldErrors {
   name?: string
   phone?: string
   date?: string
+  period?: string
 }
+
+type TouchedFields = Record<'name' | 'phone' | 'date' | 'period', boolean>
 
 interface BookingFormProps {
   services: Service[]
@@ -35,7 +38,12 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
   const [notes, setNotes] = useState('')
   const [consent, setConsent] = useState(false)
   const [submitAttempted, setSubmitAttempted] = useState(false)
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [touched, setTouched] = useState<TouchedFields>({
+    name: false,
+    phone: false,
+    date: false,
+    period: false,
+  })
   const [phase, setPhase] = useState<Phase>('idle')
   const [pendingMessage, setPendingMessage] = useState('')
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle')
@@ -54,14 +62,23 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
 
   function validate(): FieldErrors {
     const errors: FieldErrors = {}
-    if (!isValidFullName(name)) errors.name = 'Informe seu nome completo.'
+    if (!isValidName(name)) errors.name = 'Informe seu nome.'
     if (!isValidBrazilianPhone(phone)) errors.phone = 'Informe um telefone válido, com DDD.'
-    if (preferredDay && isPastDate(preferredDay)) errors.date = 'Escolha uma data a partir de hoje.'
+    if (!isValidFutureOrTodayDate(preferredDay)) errors.date = 'Escolha uma data válida, a partir de hoje.'
+    if (!preferredPeriod) errors.period = 'Escolha um período.'
     return errors
   }
 
   const liveErrors = validate()
   const canSubmit = Object.keys(liveErrors).length === 0 && consent && services.length > 0
+
+  function markTouched(field: keyof TouchedFields) {
+    setTouched((current) => ({ ...current, [field]: true }))
+  }
+
+  function shownError(field: keyof FieldErrors, touchedField: keyof TouchedFields): string | undefined {
+    return touched[touchedField] || submitAttempted ? liveErrors[field] : undefined
+  }
 
   function openWhatsApp(message: string): boolean {
     // Precisa ser chamado de forma síncrona, sem nenhum await/setTimeout antes,
@@ -76,7 +93,6 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
     event.preventDefault()
     setSubmitAttempted(true)
     const errors = validate()
-    setFieldErrors(errors)
     if (Object.keys(errors).length > 0 || !consent || services.length === 0) return
 
     const message = buildBookingMessage(
@@ -110,17 +126,18 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
             label="Nome completo"
             htmlFor="booking-name"
             required
-            error={submitAttempted ? fieldErrors.name : undefined}
+            error={shownError('name', 'name')}
           >
             <input
               id="booking-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={() => markTouched('name')}
               required
               autoComplete="name"
               placeholder="Ex: Juliana Ferreira"
-              aria-invalid={submitAttempted && Boolean(fieldErrors.name)}
+              aria-invalid={Boolean(shownError('name', 'name'))}
               className="form-input"
             />
           </Field>
@@ -129,17 +146,18 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
             label="Telefone com WhatsApp"
             htmlFor="booking-phone"
             required
-            error={submitAttempted ? fieldErrors.phone : undefined}
+            error={shownError('phone', 'phone')}
           >
             <input
               id="booking-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              onBlur={() => markTouched('phone')}
               required
               autoComplete="tel"
               placeholder="(19) 99999-9999"
-              aria-invalid={submitAttempted && Boolean(fieldErrors.phone)}
+              aria-invalid={Boolean(shownError('phone', 'phone'))}
               className="form-input"
             />
           </Field>
@@ -148,25 +166,41 @@ export function BookingForm({ services, onBack }: BookingFormProps) {
 
       <FormSection title="Preferência de atendimento">
         <div className="grid gap-5 sm:grid-cols-3">
-          <Field label="Data de preferência" htmlFor="booking-day" error={fieldErrors.date}>
+          <Field
+            label="Data de preferência"
+            htmlFor="booking-day"
+            required
+            error={shownError('date', 'date')}
+          >
             <input
               id="booking-day"
               type="date"
               value={preferredDay}
               min={getTodayIsoDate()}
               onChange={(e) => setPreferredDay(e.target.value)}
+              onBlur={() => markTouched('date')}
+              required
+              aria-invalid={Boolean(shownError('date', 'date'))}
               className="form-input"
             />
           </Field>
 
-          <Field label="Período" htmlFor="booking-period">
+          <Field
+            label="Período"
+            htmlFor="booking-period"
+            required
+            error={shownError('period', 'period')}
+          >
             <select
               id="booking-period"
               value={preferredPeriod}
               onChange={(e) => setPreferredPeriod(e.target.value as BookingFormData['preferredPeriod'])}
+              onBlur={() => markTouched('period')}
+              required
+              aria-invalid={Boolean(shownError('period', 'period'))}
               className="form-input"
             >
-              <option value="">Sem preferência</option>
+              <option value="">Selecione um período</option>
               {PERIOD_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
