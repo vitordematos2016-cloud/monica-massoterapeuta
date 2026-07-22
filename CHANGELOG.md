@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.1.0] - Reorganização completa do agendamento e da mensagem do WhatsApp
+
+- **Etapa "Revisar e agendar" renomeada e reorganizada**: título "Revise e solicite seu
+  horário" + texto explicativo. Conteúdo dividido em blocos claros com título e divisória
+  próprios: Serviços selecionados, Dados pessoais, Preferência de atendimento, Observações,
+  Confirmação e envio.
+- **Serviços selecionados**: cada serviço em uma linha com ícone, nome (elemento principal),
+  resumo curto (desktop) e botão discreto de remover; contador "N serviços selecionados"; sem
+  preços.
+- **Formulário**: todos os campos com label visível (nunca só placeholder) — Nome completo,
+  Telefone com WhatsApp, Data de preferência, Período, novo campo "Horário aproximado", e
+  Observações (opcional). Validação em tempo real (nome incompleto, telefone sem formato
+  válido, data passada) com mensagens claras, sem `alert()` nativo.
+- **Layout**: duas colunas equilibradas no desktop (serviços + aviso de confirmação à esquerda,
+  formulário à direita, coluna esquerda fixa ao rolar) e uma única coluna mobile-first na ordem
+  exigida. Elementos flutuantes (WhatsApp, "Minha seleção") somem automaticamente enquanto a
+  seção de agendamento está visível na tela (`useFloatingUiSuppressed`, generalizado a partir do
+  mecanismo já usado no mapa da Localização).
+- **Resumo da solicitação**: recapitula serviços, data, período, horário e contato preenchidos,
+  omitindo qualquer campo vazio; aviso final deixa claro que o horário depende de confirmação.
+- **Botões**: "Voltar aos serviços" (secundário) e "Enviar solicitação pelo WhatsApp"
+  (principal) — desabilitado até os campos obrigatórios serem válidos, com estado de
+  processamento antes de abrir o WhatsApp.
+- **Mensagem do WhatsApp reescrita** com estrutura profissional (blocos em negrito compatíveis
+  com o WhatsApp, linha em branco entre blocos, serviços em lista, campos vazios removidos por
+  completo — incluindo o bloco de observações e a linha de horário quando não informados).
+- **Feedback pós-envio**: "Solicitação preparada com sucesso." (nunca "confirmado"); se o
+  WhatsApp não abrir, oferece "Tentar novamente" e "Copiar mensagem" (com fallback de
+  clipboard).
+
 ## [1.0.1] - Correção crítica do menu mobile
 
 - Corrigido bug em que o conteúdo da página (avaliações, textos, botões) aparecia "vazando"

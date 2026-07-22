@@ -4,7 +4,9 @@ import { Container } from '../ui/Container'
 import { Reveal } from '../ui/Reveal'
 import { siteConfig } from '../../data/siteConfig'
 import { copyToClipboard } from '../../utils/clipboard'
-import { dispatchLocationMapVisibility } from '../../utils/mapVisibilityEvent'
+import { setFloatingUiSuppressed } from '../../utils/floatingUiSuppression'
+
+const LOCATION_MAP_SOURCE = 'location-map'
 
 const { lat, lng } = siteConfig.address.coordinates
 const mapsCoordsParam = `${lat},${lng}`
@@ -37,7 +39,7 @@ export function Location() {
       (entries) => {
         entries.forEach((entry) => visibility.set(entry.target, entry.isIntersecting))
         const anyVisible = Array.from(visibility.values()).some(Boolean)
-        dispatchLocationMapVisibility(anyVisible)
+        setFloatingUiSuppressed(LOCATION_MAP_SOURCE, anyVisible)
       },
       { threshold: 0.1 },
     )
@@ -46,7 +48,7 @@ export function Location() {
 
     return () => {
       observer.disconnect()
-      dispatchLocationMapVisibility(false)
+      setFloatingUiSuppressed(LOCATION_MAP_SOURCE, false)
     }
   }, [])
 

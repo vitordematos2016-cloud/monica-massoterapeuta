@@ -1,154 +1,296 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
-import { Send } from 'lucide-react'
+import { Copy, Check, Loader2, Send } from 'lucide-react'
 import { getTodayIsoDate, isPastDate } from '../../utils/dateValidation'
 import { buildBookingMessage, buildWhatsAppUrl } from '../../utils/whatsapp'
+import { isValidBrazilianPhone, isValidFullName } from '../../utils/formatters'
+import { copyToClipboard } from '../../utils/clipboard'
+import { BookingSummary } from '../booking/BookingSummary'
 import type { BookingFormData, Service } from '../../types'
 
-const PERIOD_OPTIONS: { value: BookingFormData['preferredPeriod']; label: string }[] = [
+const PERIOD_OPTIONS: { value: Exclude<BookingFormData['preferredPeriod'], ''>; label: string }[] = [
   { value: 'manha', label: 'Manhã' },
   { value: 'tarde', label: 'Tarde' },
   { value: 'noite', label: 'Fim de tarde/noite' },
 ]
 
-interface BookingFormProps {
-  services: Service[]
+type Phase = 'idle' | 'processing' | 'success' | 'failed'
+
+interface FieldErrors {
+  name?: string
+  phone?: string
+  date?: string
 }
 
-export function BookingForm({ services }: BookingFormProps) {
+interface BookingFormProps {
+  services: Service[]
+  onBack: () => void
+}
+
+export function BookingForm({ services, onBack }: BookingFormProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [preferredDay, setPreferredDay] = useState('')
   const [preferredPeriod, setPreferredPeriod] = useState<BookingFormData['preferredPeriod']>('')
+  const [preferredTime, setPreferredTime] = useState('')
   const [notes, setNotes] = useState('')
   const [consent, setConsent] = useState(false)
-  const [dateError, setDateError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [submitAttempted, setSubmitAttempted] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [pendingMessage, setPendingMessage] = useState('')
+  const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle')
 
-  const canSubmit =
-    name.trim().length > 1 && phone.trim().length >= 8 && consent && !dateError && services.length > 0
+  const serviceNames = services.map((service) => service.name)
 
-  function handleDayChange(value: string) {
-    setPreferredDay(value)
-    setDateError(isPastDate(value) ? 'Escolha uma data a partir de hoje.' : '')
+  const currentData: BookingFormData = {
+    name,
+    phone,
+    preferredDay,
+    preferredPeriod,
+    preferredTime,
+    notes,
+    consent,
   }
 
-  function handleSubmit(event: FormEvent) {
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {}
+    if (!isValidFullName(name)) errors.name = 'Informe seu nome completo.'
+    if (!isValidBrazilianPhone(phone)) errors.phone = 'Informe um telefone válido, com DDD.'
+    if (preferredDay && isPastDate(preferredDay)) errors.date = 'Escolha uma data a partir de hoje.'
+    return errors
+  }
+
+  const liveErrors = validate()
+  const canSubmit =
+    Object.keys(liveErrors).length === 0 && consent && services.length > 0 && phase !== 'processing'
+
+  async function openWhatsApp(message: string): Promise<boolean> {
+    const win = window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
+    return Boolean(win)
+  }
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (!canSubmit) return
+    setSubmitAttempted(true)
+    const errors = validate()
+    setFieldErrors(errors)
+    if (Object.keys(errors).length > 0 || !consent || services.length === 0) return
 
-    const data: BookingFormData = {
-      name: name.trim(),
-      phone: phone.trim(),
-      preferredDay,
-      preferredPeriod,
-      notes: notes.trim(),
-      consent,
-    }
-
+    setPhase('processing')
     const message = buildBookingMessage(
-      data,
-      services.map((service) => service.name),
+      { ...currentData, name: name.trim(), phone: phone.trim(), notes: notes.trim() },
+      serviceNames,
     )
-    window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
-    setSubmitted(true)
+    setPendingMessage(message)
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const opened = await openWhatsApp(message)
+    setPhase(opened ? 'success' : 'failed')
+  }
+
+  async function handleRetry() {
+    setPhase('processing')
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const opened = await openWhatsApp(pendingMessage)
+    setPhase(opened ? 'success' : 'failed')
+  }
+
+  async function handleCopyMessage() {
+    const ok = await copyToClipboard(pendingMessage)
+    if (ok) {
+      setCopyState('copied')
+      setTimeout(() => setCopyState('idle'), 2500)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="grid gap-5">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Nome" htmlFor="booking-name" required>
-          <input
-            id="booking-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+      <FormSection title="Dados pessoais">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            label="Nome completo"
+            htmlFor="booking-name"
             required
-            autoComplete="name"
-            className="form-input"
-            placeholder="Seu nome completo"
-          />
-        </Field>
-
-        <Field label="Telefone" htmlFor="booking-phone" required>
-          <input
-            id="booking-phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-            autoComplete="tel"
-            className="form-input"
-            placeholder="(19) 99999-9999"
-          />
-        </Field>
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Dia de preferência" htmlFor="booking-day" error={dateError}>
-          <input
-            id="booking-day"
-            type="date"
-            value={preferredDay}
-            min={getTodayIsoDate()}
-            onChange={(e) => handleDayChange(e.target.value)}
-            className="form-input"
-          />
-        </Field>
-
-        <Field label="Período de preferência" htmlFor="booking-period">
-          <select
-            id="booking-period"
-            value={preferredPeriod}
-            onChange={(e) => setPreferredPeriod(e.target.value as BookingFormData['preferredPeriod'])}
-            className="form-input"
+            error={submitAttempted ? fieldErrors.name : undefined}
           >
-            <option value="">Sem preferência</option>
-            {PERIOD_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <input
+              id="booking-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              autoComplete="name"
+              placeholder="Ex: Juliana Ferreira"
+              aria-invalid={submitAttempted && Boolean(fieldErrors.name)}
+              className="form-input"
+            />
+          </Field>
+
+          <Field
+            label="Telefone com WhatsApp"
+            htmlFor="booking-phone"
+            required
+            error={submitAttempted ? fieldErrors.phone : undefined}
+          >
+            <input
+              id="booking-phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              autoComplete="tel"
+              placeholder="(19) 99999-9999"
+              aria-invalid={submitAttempted && Boolean(fieldErrors.phone)}
+              className="form-input"
+            />
+          </Field>
+        </div>
+      </FormSection>
+
+      <FormSection title="Preferência de atendimento">
+        <div className="grid gap-5 sm:grid-cols-3">
+          <Field label="Data de preferência" htmlFor="booking-day" error={fieldErrors.date}>
+            <input
+              id="booking-day"
+              type="date"
+              value={preferredDay}
+              min={getTodayIsoDate()}
+              onChange={(e) => setPreferredDay(e.target.value)}
+              className="form-input"
+            />
+          </Field>
+
+          <Field label="Período" htmlFor="booking-period">
+            <select
+              id="booking-period"
+              value={preferredPeriod}
+              onChange={(e) => setPreferredPeriod(e.target.value as BookingFormData['preferredPeriod'])}
+              className="form-input"
+            >
+              <option value="">Sem preferência</option>
+              {PERIOD_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Horário aproximado" htmlFor="booking-time">
+            <input
+              id="booking-time"
+              type="time"
+              value={preferredTime}
+              onChange={(e) => setPreferredTime(e.target.value)}
+              className="form-input"
+            />
+          </Field>
+        </div>
+      </FormSection>
+
+      <FormSection title="Observações">
+        <Field label="Observações (opcional)" htmlFor="booking-notes">
+          <textarea
+            id="booking-notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            className="form-input resize-none"
+            placeholder="Alguma necessidade ou dúvida que queira compartilhar"
+          />
         </Field>
-      </div>
+      </FormSection>
 
-      <Field label="Observações" htmlFor="booking-notes">
-        <textarea
-          id="booking-notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={3}
-          className="form-input resize-none"
-          placeholder="Alguma informação que queira compartilhar antes do atendimento"
-        />
-      </Field>
+      <FormSection title="Confirmação e envio">
+        <label className="flex items-start gap-3 text-sm text-ink-soft">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            required
+            className="mt-1 h-4 w-4 shrink-0 accent-olive"
+          />
+          Autorizo o contato pelo WhatsApp para confirmação do meu pedido de agendamento.
+        </label>
 
-      <label className="flex items-start gap-3 text-sm text-ink-soft">
-        <input
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          required
-          className="mt-1 h-4 w-4 shrink-0 accent-olive"
-        />
-        Autorizo o contato pelo WhatsApp para tratar sobre este pedido de agendamento.
-      </label>
+        <div className="mt-5">
+          <BookingSummary serviceNames={serviceNames} data={currentData} />
+        </div>
 
-      <button
-        type="submit"
-        disabled={!canSubmit}
-        className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-olive px-6 py-3.5 text-sm font-medium text-cream transition-all duration-300 hover:bg-olive-dark disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        <Send size={16} />
-        Enviar pedido pelo WhatsApp
-      </button>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse">
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-full bg-olive px-6 text-sm font-medium text-cream transition-all duration-300 hover:bg-olive-dark disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {phase === 'processing' ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Preparando solicitação…
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                Enviar solicitação pelo WhatsApp
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex min-h-14 flex-1 items-center justify-center rounded-full border border-olive px-6 text-sm font-medium text-olive-dark transition hover:bg-olive hover:text-cream sm:flex-none"
+          >
+            Voltar aos serviços
+          </button>
+        </div>
 
-      <p className="text-center text-xs text-ink-soft/70" role="status">
-        {submitted
-          ? 'Seu pedido foi enviado ao WhatsApp. Aguarde a confirmação da Mônica.'
-          : 'Seu pedido será enviado para a Mônica, que confirmará a disponibilidade do horário.'}
-      </p>
+        <div role="status" aria-live="polite" className="mt-4 text-center text-sm">
+          {phase === 'success' && (
+            <p className="text-olive-dark">Solicitação preparada com sucesso.</p>
+          )}
+          {phase === 'failed' && (
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-terracotta">
+                Não conseguimos abrir o WhatsApp automaticamente. Tente novamente ou copie a
+                mensagem abaixo.
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={handleRetry}
+                  className="rounded-full bg-olive px-5 py-2.5 text-sm font-medium text-cream transition hover:bg-olive-dark"
+                >
+                  Tentar novamente
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyMessage}
+                  className="flex items-center justify-center gap-2 rounded-full border border-olive px-5 py-2.5 text-sm font-medium text-olive-dark transition hover:bg-olive hover:text-cream"
+                >
+                  {copyState === 'copied' ? <Check size={16} /> : <Copy size={16} />}
+                  {copyState === 'copied' ? 'Mensagem copiada' : 'Copiar mensagem'}
+                </button>
+              </div>
+            </div>
+          )}
+          {phase === 'idle' && (
+            <p className="text-ink-soft/70">
+              Seu pedido será enviado pelo WhatsApp. Nenhum horário é confirmado automaticamente.
+            </p>
+          )}
+        </div>
+      </FormSection>
     </form>
+  )
+}
+
+function FormSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="border-t border-sand-dark/60 pt-6 first:border-t-0 first:pt-0">
+      <h3 className="mb-4 font-serif text-lg text-olive-dark">{title}</h3>
+      {children}
+    </div>
   )
 }
 
@@ -161,6 +303,7 @@ interface FieldProps {
 }
 
 function Field({ label, htmlFor, required, error, children }: FieldProps) {
+  const errorId = `${htmlFor}-error`
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={htmlFor} className="text-sm font-medium text-olive-dark">
@@ -168,7 +311,7 @@ function Field({ label, htmlFor, required, error, children }: FieldProps) {
       </label>
       {children}
       {error && (
-        <p role="alert" className="text-xs text-terracotta">
+        <p id={errorId} role="alert" className="text-xs text-terracotta">
           {error}
         </p>
       )}
