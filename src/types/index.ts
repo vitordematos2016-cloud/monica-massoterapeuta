@@ -51,6 +51,7 @@ export interface BookingFormData {
   phone: string
   preferredDay: string
   preferredPeriod: 'manha' | 'tarde' | 'noite' | ''
+  preferredTime: string
   notes: string
   consent: boolean
 }
