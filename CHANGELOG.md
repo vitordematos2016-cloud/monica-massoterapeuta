@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0] - Identidade "Mônica Nunes / Massoterapeuta" e ajustes finos de fotos
+
+- Adicionado "Massoterapeuta" logo abaixo de "Mônica Nunes" em três lugares: logotipo do
+  cabeçalho (`Logo.tsx`), animação de abertura (`IntroSplash.tsx`) e no título principal da
+  seção Início (`Hero.tsx`), que agora exibe nome + profissão antes da frase de destaque "Seu
+  corpo merece esse carinho.". Tamanhos responsivos com `clamp()` para caber sem cortes de
+  320px a telas grandes.
+- Removida a borda (`ring`) sutil ao redor da foto do Hero, apontada como indesejada.
+- Foto da seção Sobre recortada novamente com mais espaço acima da cabeça — o corte anterior
+  deixava o topo do cabelo quase tocando a borda da moldura orgânica.
+
 ## [0.5.0] - Reescrita da seção de Localização (mobile-first) e recorte das fotos
 
 - **Localização**: título corrigido para "Venha nos visitar" (removido "Ou melhor" em todo o

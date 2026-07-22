@@ -27,11 +27,18 @@ export function Hero() {
               Massoterapia &amp; Estética
             </span>
 
-            <h1 className="mt-6 font-serif text-4xl leading-[1.15] text-cream sm:text-5xl lg:text-6xl">
-              {siteConfig.tagline}
+            <h1 className="mt-5 font-serif text-[clamp(2.2rem,9vw,4.25rem)] leading-[1.05] text-cream">
+              Mônica Nunes
             </h1>
+            <p className="mt-1.5 text-[clamp(0.75rem,3vw,0.95rem)] font-medium uppercase tracking-[0.25em] text-terracotta-soft">
+              Massoterapeuta
+            </p>
 
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
+            <h2 className="mt-6 font-serif text-2xl italic leading-snug text-cream sm:text-3xl">
+              {siteConfig.tagline}
+            </h2>
+
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
               {siteConfig.subtitle}
             </p>
 
@@ -56,7 +63,7 @@ export function Hero() {
 
           <div className="relative mx-auto w-full max-w-[260px] sm:max-w-xs lg:max-w-none">
             <div className="absolute -inset-4 rounded-[2.5rem] bg-terracotta/15 blob-shape animate-breathe" aria-hidden="true" />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl ring-1 ring-cream/10">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl">
               <img
                 src={monicaHeroPhoto}
                 alt="Mônica Nunes, massoterapeuta"
