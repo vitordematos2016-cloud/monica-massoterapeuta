@@ -10,7 +10,8 @@ interface ServiceModalProps {
 }
 
 export function ServiceModal({ service, onClose }: ServiceModalProps) {
-  const { selectService } = useSelection()
+  const { isSelected, toggleService } = useSelection()
+  const selected = service ? isSelected(service.slug) : false
 
   return (
     <Modal isOpen={!!service} onClose={onClose} labelledBy="service-modal-title">
@@ -49,14 +50,19 @@ export function ServiceModal({ service, onClose }: ServiceModalProps) {
             específicas, converse com a Mônica antes de agendar.
           </p>
 
+          {selected && (
+            <p className="mt-5 flex items-center gap-2 text-sm font-medium text-olive-dark">
+              <Check size={16} className="text-gold" />
+              Este serviço está na sua seleção.
+            </p>
+          )}
+
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Button
-              onClick={() => {
-                selectService(service.slug, true)
-                onClose()
-              }}
+              variant={selected ? 'secondary' : 'primary'}
+              onClick={() => toggleService(service.slug, service.name)}
             >
-              Selecionar para agendamento
+              {selected ? 'Remover da seleção' : 'Selecionar para agendamento'}
             </Button>
             <Button variant="secondary" onClick={onClose}>
               Fechar

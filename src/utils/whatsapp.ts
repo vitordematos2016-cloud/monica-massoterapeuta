@@ -14,18 +14,23 @@ export function buildWhatsAppUrl(message: string): string {
   return `https://wa.me/${siteConfig.whatsappNumber}?text=${encoded}`
 }
 
-export function buildBookingMessage(data: BookingFormData, serviceName: string | undefined): string {
+export function buildBookingMessage(data: BookingFormData, serviceNames: string[]): string {
+  const serviceLines =
+    serviceNames.length > 0 ? serviceNames.map((name) => `• ${name}`).join('\n') : '• A combinar'
+
   const lines = [
     `Olá, Mônica! Meu nome é ${data.name || '[nome]'}.`,
     '',
-    'Gostaria de solicitar um horário.',
+    'Gostaria de solicitar um horário para os seguintes serviços:',
     '',
-    `Experiência escolhida: ${serviceName ?? 'A combinar'}`,
-    `Dia de preferência: ${data.preferredDay ? formatIsoDateToPtBr(data.preferredDay) : 'A combinar'}`,
-    `Período: ${PERIOD_LABELS[data.preferredPeriod]}`,
+    serviceLines,
+    '',
+    `Data de preferência: ${data.preferredDay ? formatIsoDateToPtBr(data.preferredDay) : 'A combinar'}`,
+    `Período de preferência: ${PERIOD_LABELS[data.preferredPeriod]}`,
+    `Telefone para contato: ${data.phone || '[telefone]'}`,
     `Observações: ${data.notes || 'Nenhuma'}`,
     '',
-    'Aguardo a confirmação da disponibilidade.',
+    'Sei que o horário ainda depende da confirmação de disponibilidade.',
   ]
   return lines.join('\n')
 }

@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const SESSION_KEY = 'monica-nunes-intro-shown'
+const SPLASH_DURATION_MS = 2000
 
 export function IntroSplash() {
   const [shouldRender, setShouldRender] = useState(false)
 
   useEffect(() => {
-    const alreadyShown = window.sessionStorage.getItem(SESSION_KEY)
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
 
-    if (!alreadyShown && !prefersReducedMotion) {
-      setShouldRender(true)
-      window.sessionStorage.setItem(SESSION_KEY, 'true')
-      const timer = setTimeout(() => setShouldRender(false), 1300)
-      return () => clearTimeout(timer)
-    }
+    setShouldRender(true)
+    const timer = setTimeout(() => setShouldRender(false), SPLASH_DURATION_MS)
+    return () => clearTimeout(timer)
   }, [])
 
   if (!shouldRender) return null

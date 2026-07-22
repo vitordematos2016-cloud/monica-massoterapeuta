@@ -9,7 +9,7 @@ import { buildSimpleContactMessage, buildWhatsAppUrl } from '../../utils/whatsap
 
 export function ObjectivePicker() {
   const [activeObjectiveId, setActiveObjectiveId] = useState<string | null>(null)
-  const { selectService } = useSelection()
+  const { isSelected, toggleService } = useSelection()
 
   const activeObjective = objectives.find((o) => o.id === activeObjectiveId) ?? null
 
@@ -58,14 +58,20 @@ export function ObjectivePicker() {
                   {activeObjective.serviceSlugs.map((slug) => {
                     const service = getServiceBySlug(slug)
                     if (!service) return null
+                    const selected = isSelected(slug)
                     return (
                       <div key={slug} className="flex items-center justify-between gap-3 rounded-2xl bg-sand p-4">
                         <span className="font-serif text-olive-dark">{service.name}</span>
                         <button
-                          onClick={() => selectService(service.slug, true)}
-                          className="shrink-0 rounded-full border border-olive px-4 py-2 text-xs font-medium text-olive-dark transition hover:bg-olive hover:text-cream"
+                          onClick={() => toggleService(service.slug, service.name)}
+                          aria-pressed={selected}
+                          className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium transition ${
+                            selected
+                              ? 'border-gold bg-gold text-cream hover:bg-terracotta'
+                              : 'border-olive text-olive-dark hover:bg-olive hover:text-cream'
+                          }`}
                         >
-                          Selecionar
+                          {selected ? 'Remover' : 'Selecionar'}
                         </button>
                       </div>
                     )

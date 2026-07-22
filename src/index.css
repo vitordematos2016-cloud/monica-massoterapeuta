@@ -135,7 +135,7 @@ h4 {
 }
 
 .intro-splash {
-  animation: intro-fade 1.2s ease forwards;
+  animation: intro-fade 2s ease forwards;
 }
 
 @keyframes intro-name-up {
@@ -143,7 +143,7 @@ h4 {
     transform: translateY(0);
     opacity: 0;
   }
-  25% {
+  20% {
     opacity: 1;
   }
   100% {
@@ -153,7 +153,36 @@ h4 {
 }
 
 .intro-name {
-  animation: intro-name-up 1.1s ease forwards;
+  animation: intro-name-up 1.8s ease forwards;
+}
+
+@keyframes select-badge-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-select-in {
+  animation: select-badge-in 0.35s ease-out;
+}
+
+@keyframes cart-bump {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-cart-bump {
+  animation: cart-bump 0.4s ease-out;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

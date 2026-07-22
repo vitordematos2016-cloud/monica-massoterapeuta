@@ -49,7 +49,6 @@ export interface Testimonial {
 export interface BookingFormData {
   name: string
   phone: string
-  serviceSlug: string
   preferredDay: string
   preferredPeriod: 'manha' | 'tarde' | 'noite' | ''
   notes: string

@@ -1,26 +1,79 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useRef, useState, type ReactNode } from 'react'
 
 interface SelectionContextValue {
-  selectedServiceSlug: string
-  selectService: (slug: string, scrollToBooking?: boolean) => void
+  selectedSlugs: string[]
+  isSelected: (slug: string) => boolean
+  toggleService: (slug: string, serviceName: string) => void
+  removeService: (slug: string, serviceName?: string) => void
+  clearSelection: () => void
+  isCartOpen: boolean
+  openCart: () => void
+  closeCart: () => void
+  announcement: string
 }
 
 const SelectionContext = createContext<SelectionContextValue | null>(null)
 
 export function SelectionProvider({ children }: { children: ReactNode }) {
-  const [selectedServiceSlug, setSelectedServiceSlug] = useState('')
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [announcement, setAnnouncement] = useState('')
+  const hasAutoOpenedRef = useRef(false)
 
-  function selectService(slug: string, scrollToBooking = false) {
-    setSelectedServiceSlug(slug)
-    if (scrollToBooking) {
-      requestAnimationFrame(() => {
-        document.getElementById('agendamento')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+  function isSelected(slug: string): boolean {
+    return selectedSlugs.includes(slug)
+  }
+
+  function openCart() {
+    setIsCartOpen(true)
+  }
+
+  function closeCart() {
+    setIsCartOpen(false)
+  }
+
+  function toggleService(slug: string, serviceName: string) {
+    setSelectedSlugs((current) => {
+      if (current.includes(slug)) {
+        setAnnouncement(`${serviceName} removido da sua seleção.`)
+        return current.filter((item) => item !== slug)
+      }
+
+      setAnnouncement(`${serviceName} adicionado à sua seleção.`)
+      if (current.length === 0 && !hasAutoOpenedRef.current) {
+        hasAutoOpenedRef.current = true
+        requestAnimationFrame(() => setIsCartOpen(true))
+      }
+      return [...current, slug]
+    })
+  }
+
+  function removeService(slug: string, serviceName?: string) {
+    setSelectedSlugs((current) => current.filter((item) => item !== slug))
+    if (serviceName) {
+      setAnnouncement(`${serviceName} removido da sua seleção.`)
     }
   }
 
+  function clearSelection() {
+    setSelectedSlugs([])
+    setAnnouncement('Seleção limpa.')
+  }
+
   return (
-    <SelectionContext.Provider value={{ selectedServiceSlug, selectService }}>
+    <SelectionContext.Provider
+      value={{
+        selectedSlugs,
+        isSelected,
+        toggleService,
+        removeService,
+        clearSelection,
+        isCartOpen,
+        openCart,
+        closeCart,
+        announcement,
+      }}
+    >
       {children}
     </SelectionContext.Provider>
   )

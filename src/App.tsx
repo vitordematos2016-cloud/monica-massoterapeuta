@@ -1,9 +1,11 @@
-import { SelectionProvider } from './context/SelectionContext'
+import { SelectionProvider, useSelection } from './context/SelectionContext'
 import { IntroSplash } from './components/layout/IntroSplash'
 import { Header } from './components/layout/Header'
 import { Footer } from './components/layout/Footer'
 import { WhatsAppFloatButton } from './components/layout/WhatsAppFloatButton'
 import { CookieConsent } from './components/layout/CookieConsent'
+import { CartButton } from './components/cart/CartButton'
+import { CartPanel } from './components/cart/CartPanel'
 import { Hero } from './components/sections/Hero'
 import { Highlights } from './components/sections/Highlights'
 import { About } from './components/sections/About'
@@ -17,10 +19,20 @@ import { Location } from './components/sections/Location'
 import { Booking } from './components/sections/Booking'
 import { Contact } from './components/sections/Contact'
 
+function SelectionAnnouncer() {
+  const { announcement } = useSelection()
+  return (
+    <div className="sr-only" role="status" aria-live="polite">
+      {announcement}
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <SelectionProvider>
       <IntroSplash />
+      <SelectionAnnouncer />
       <Header />
       <main>
         <Hero />
@@ -38,6 +50,8 @@ export default function App() {
       </main>
       <Footer />
       <WhatsAppFloatButton />
+      <CartButton />
+      <CartPanel />
       <CookieConsent />
     </SelectionProvider>
   )

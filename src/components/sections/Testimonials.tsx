@@ -1,9 +1,25 @@
 import { useRef } from 'react'
-import { MessageCircleHeart, ChevronLeft, ChevronRight, Star } from 'lucide-react'
+import { MessageCircleHeart, ChevronLeft, ChevronRight, Star, ExternalLink } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SectionHeading } from '../ui/SectionHeading'
 import { Reveal } from '../ui/Reveal'
 import { testimonials } from '../../data/testimonials'
+import { siteConfig } from '../../data/siteConfig'
+
+function GoogleReviewsButton() {
+  return (
+    <a
+      href={siteConfig.googleReviewsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 rounded-full border border-olive px-6 py-3 text-sm font-medium text-olive-dark transition hover:bg-olive hover:text-cream"
+    >
+      <Star size={16} className="fill-terracotta text-terracotta" />
+      Ver todas as avaliações no Google
+      <ExternalLink size={14} />
+    </a>
+  )
+}
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -45,6 +61,9 @@ export function Testimonials() {
               <p className="text-sm">Depoimentos em preparação</p>
             </div>
           </Reveal>
+          <div className="mt-8 flex justify-center">
+            <GoogleReviewsButton />
+          </div>
         </Container>
       </section>
     )
@@ -104,6 +123,10 @@ export function Testimonials() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <GoogleReviewsButton />
         </div>
       </Container>
     </section>

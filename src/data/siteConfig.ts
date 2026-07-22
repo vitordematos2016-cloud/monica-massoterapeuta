@@ -25,6 +25,10 @@ export const siteConfig = {
     instagram: 'https://www.instagram.com/monica_nunes_estetica/',
     facebook: 'https://www.facebook.com/110053860814292',
   },
+  // Link oficial gerado pelo recurso "Compartilhar" do próprio Google Maps para o perfil
+  // real "Estética Mônica Nunes" (5,0 de média em 70 avaliações), localizado durante a
+  // pesquisa de avaliações. Não é um endereço inventado.
+  googleReviewsUrl: 'https://maps.app.goo.gl/hQ1QXFDsGR86HUfUA',
   // O site atual informa o mesmo horário todos os dias da semana, inclusive domingo.
   // [CONFIRMAR HORÁRIO DE ATENDIMENTO] — verificar com a cliente se realmente atende
   // todos os dias, inclusive domingos, das 08:00 às 19:30, ou se é um erro do template antigo.

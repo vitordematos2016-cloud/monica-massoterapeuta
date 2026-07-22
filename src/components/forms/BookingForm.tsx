@@ -1,10 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Send } from 'lucide-react'
-import { services, getServiceBySlug } from '../../data/services'
-import { useSelection } from '../../context/SelectionContext'
 import { getTodayIsoDate, isPastDate } from '../../utils/dateValidation'
 import { buildBookingMessage, buildWhatsAppUrl } from '../../utils/whatsapp'
-import type { BookingFormData } from '../../types'
+import type { BookingFormData, Service } from '../../types'
 
 const PERIOD_OPTIONS: { value: BookingFormData['preferredPeriod']; label: string }[] = [
   { value: 'manha', label: 'Manhã' },
@@ -12,8 +10,11 @@ const PERIOD_OPTIONS: { value: BookingFormData['preferredPeriod']; label: string
   { value: 'noite', label: 'Fim de tarde/noite' },
 ]
 
-export function BookingForm() {
-  const { selectedServiceSlug, selectService } = useSelection()
+interface BookingFormProps {
+  services: Service[]
+}
+
+export function BookingForm({ services }: BookingFormProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [preferredDay, setPreferredDay] = useState('')
@@ -23,7 +24,8 @@ export function BookingForm() {
   const [dateError, setDateError] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
-  const canSubmit = name.trim().length > 1 && phone.trim().length >= 8 && consent && !dateError
+  const canSubmit =
+    name.trim().length > 1 && phone.trim().length >= 8 && consent && !dateError && services.length > 0
 
   function handleDayChange(value: string) {
     setPreferredDay(value)
@@ -37,15 +39,16 @@ export function BookingForm() {
     const data: BookingFormData = {
       name: name.trim(),
       phone: phone.trim(),
-      serviceSlug: selectedServiceSlug,
       preferredDay,
       preferredPeriod,
       notes: notes.trim(),
       consent,
     }
 
-    const serviceName = getServiceBySlug(selectedServiceSlug)?.name
-    const message = buildBookingMessage(data, serviceName)
+    const message = buildBookingMessage(
+      data,
+      services.map((service) => service.name),
+    )
     window.open(buildWhatsAppUrl(message), '_blank', 'noopener,noreferrer')
     setSubmitted(true)
   }
@@ -79,22 +82,6 @@ export function BookingForm() {
           />
         </Field>
       </div>
-
-      <Field label="Experiência desejada" htmlFor="booking-service">
-        <select
-          id="booking-service"
-          value={selectedServiceSlug}
-          onChange={(e) => selectService(e.target.value)}
-          className="form-input"
-        >
-          <option value="">Selecione uma experiência (opcional)</option>
-          {services.map((service) => (
-            <option key={service.slug} value={service.slug}>
-              {service.name}
-            </option>
-          ))}
-        </select>
-      </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Dia de preferência" htmlFor="booking-day" error={dateError}>
@@ -153,13 +140,13 @@ export function BookingForm() {
         className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-olive px-6 py-3.5 text-sm font-medium text-cream transition-all duration-300 hover:bg-olive-dark disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Send size={16} />
-        Solicitar horário pelo WhatsApp
+        Enviar pedido pelo WhatsApp
       </button>
 
       <p className="text-center text-xs text-ink-soft/70" role="status">
         {submitted
           ? 'Seu pedido foi enviado ao WhatsApp. Aguarde a confirmação da Mônica.'
-          : 'Seu pedido será enviado à Mônica para confirmação. Nenhum horário fica confirmado automaticamente.'}
+          : 'Seu pedido será enviado para a Mônica, que confirmará a disponibilidade do horário.'}
       </p>
     </form>
   )
