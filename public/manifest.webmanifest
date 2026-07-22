@@ -1,0 +1,15 @@
+{
+  "name": "Mônica Nunes Estética e Massoterapia",
+  "short_name": "Mônica Nunes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf8f2",
+  "theme_color": "#414d38",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
