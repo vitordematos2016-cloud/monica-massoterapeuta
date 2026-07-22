@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.0] - Reescrita da seção de Localização (mobile-first) e recorte das fotos
+
+- **Localização**: título corrigido para "Venha nos visitar" (removido "Ou melhor" em todo o
+  site). Seção reescrita com abordagem mobile-first real: no celular, ordem exata
+  label → título → texto → endereço → botão "Abrir no Google Maps" → botão "Copiar endereço" →
+  mapa → aviso de agendamento; no desktop/tablet largo (≥1024px), duas colunas equilibradas
+  (conteúdo à esquerda, mapa à direita, altura igual).
+- Mapa com camada "Toque para interagir com o mapa" no primeiro toque (mobile e desktop),
+  evitando que o iframe capture a rolagem da página antes da ativação; após tocar, o próprio
+  embed do Google exige Ctrl+scroll para zoom, reforçando a proteção contra scroll-jacking.
+- Botão flutuante do WhatsApp agora se esconde suavemente (fade + escala) sempre que o mapa da
+  Localização está visível na tela, para nunca cobrir os controles do mapa
+  (`src/utils/mapVisibilityEvent.ts` + `IntersectionObserver` em `Location.tsx`).
+- "Copiar endereço" ganhou fallback (`document.execCommand('copy')`) para navegadores sem
+  suporte à Clipboard API, além do feedback "Endereço copiado" que já existia.
+- **Fotos do Hero e Sobre recortadas manualmente** (Pillow) para enquadrar exatamente 4:5 sem
+  depender do corte automático do navegador — rosto, ombros e mãos bem centralizados dentro da
+  moldura do card, removendo espaço vazio excessivo ao redor da foto original.
+
 ## [0.4.0] - Fotos profissionais reais no Hero e Sobre
 
 - Substituídas as composições orgânicas temporárias do Hero e da seção Sobre por 2 retratos

@@ -61,10 +61,10 @@ export function Hero() {
                 src={monicaHeroPhoto}
                 alt="Mônica Nunes, massoterapeuta"
                 width={1000}
-                height={1063}
+                height={1250}
                 loading="eager"
                 fetchPriority="high"
-                className="h-full w-full object-cover object-top"
+                className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-olive-dark/35 via-transparent to-transparent" />
             </div>

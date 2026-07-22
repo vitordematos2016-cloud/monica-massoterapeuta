@@ -1,13 +1,30 @@
+import { useEffect, useState } from 'react'
 import { buildSimpleContactMessage, buildWhatsAppUrl } from '../../utils/whatsapp'
+import { LOCATION_MAP_VISIBILITY_EVENT } from '../../utils/mapVisibilityEvent'
 
 export function WhatsAppFloatButton() {
+  const [mapNearby, setMapNearby] = useState(false)
+
+  useEffect(() => {
+    function handleMapVisibility(event: Event) {
+      const detail = (event as CustomEvent<{ visible: boolean }>).detail
+      setMapNearby(Boolean(detail?.visible))
+    }
+    window.addEventListener(LOCATION_MAP_VISIBILITY_EVENT, handleMapVisibility)
+    return () => window.removeEventListener(LOCATION_MAP_VISIBILITY_EVENT, handleMapVisibility)
+  }, [])
+
   return (
     <a
       href={buildWhatsAppUrl(buildSimpleContactMessage())}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Conversar no WhatsApp"
-      className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#2f6b4f] text-cream shadow-lg transition-transform duration-300 hover:scale-105 active:scale-95 sm:bottom-7 sm:right-7"
+      aria-hidden={mapNearby}
+      tabIndex={mapNearby ? -1 : undefined}
+      className={`fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#2f6b4f] text-cream shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 sm:bottom-7 sm:right-7 ${
+        mapNearby ? 'pointer-events-none translate-y-3 scale-75 opacity-0' : 'opacity-100'
+      }`}
     >
       <WhatsAppIcon />
     </a>

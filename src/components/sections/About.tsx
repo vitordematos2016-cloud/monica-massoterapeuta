@@ -52,7 +52,7 @@ export function About() {
                   src={monicaAboutPhoto}
                   alt="Mônica Nunes, massoterapeuta, sorrindo em seu espaço de atendimento"
                   width={1000}
-                  height={1214}
+                  height={1250}
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />
