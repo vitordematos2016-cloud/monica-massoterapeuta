@@ -23,23 +23,36 @@ Enquanto as fotos não chegam, o código usa composições visuais orgânicas te
 (gradientes e formas em `src/components/sections/Hero.tsx`, `About.tsx` e `ServiceCard.tsx`),
 claramente marcadas com comentários `[INSERIR FOTO ...]`.
 
-## 2. Depoimentos reais
+## 2. Depoimentos reais — ✅ resolvido com avaliações do Google
 
-O site atual exibe 5 imagens de print de depoimentos (capturas de tela), sem texto extraível de
-forma confiável e sem confirmação de autorização de uso (podem conter nomes/fotos de terceiros
-sem consentimento explícito para uso no novo site). Nenhum depoimento foi inventado.
+O site atual exibia 5 imagens de print de depoimentos (capturas de tela), sem texto extraível de
+forma confiável e sem confirmação de autorização de uso. Em vez de usar essas imagens, localizei
+o perfil real do Google Meu Negócio **"Estética Mônica Nunes"** (5,0 de média em 70 avaliações)
+e usei 5 avaliações públicas reais (nome, nota em estrelas e texto, sem datas) em
+`src/data/testimonials.ts`. Nenhum nome, texto ou nota foi inventado.
 
-- [ ] Solicitar depoimentos reais em texto, com autorização da cliente para publicar o nome.
-- [ ] Alternativa: solicitar o link direto das avaliações públicas do Google/Facebook para
-      referenciar ou incorporar.
+- [ ] Confirmar com a cliente se esses 5 nomes/textos podem permanecer publicados (são
+      avaliações públicas do Google, mas o ideal é o ok explícito dela).
+- [ ] Opcional: pedir para a cliente indicar outras avaliações do Google que prefira destacar,
+      ou fornecer depoimentos adicionais por escrito.
+- [ ] O Google Meu Negócio tem pelo menos 4 fotos próprias (recepção/fachada e uma foto de
+      pedras quentes em atendimento) — ver item 1, pode ajudar a resolver a falta de fotos.
 
-A seção de Avaliações (`src/components/sections/Testimonials.tsx`) já está pronta para exibir
-os depoimentos assim que `src/data/testimonials.ts` for preenchido — hoje está vazio.
+## 2.1 Divergência de endereço encontrada no Google
+
+O Google Meu Negócio da Mônica informa um endereço **diferente** do que está no site atual:
+**Rua Padre João Batista Lavello, 107, Centro, Serra Negra - SP, 13930-095** (vs. "Rua Antônio
+Rici - Estância Suíça" do site antigo). Pode ser uma mudança de endereço não atualizada no site,
+ou um erro de cadastro em uma das duas fontes.
+
+- [ ] **Confirmar com a cliente qual endereço está correto/atual** antes de publicar — o site
+      novo (`src/data/siteConfig.ts`) ainda usa o endereço do site antigo até essa confirmação.
 
 ## 3. Confirmações de conteúdo
 
 - [ ] **Horário de atendimento**: o site atual informa 08:00–19:30 todos os dias da semana,
-      inclusive domingo. Confirmar se isso está correto ou se é um erro do template antigo
+      inclusive domingo — mas o Google Meu Negócio da Mônica informa **09:00–17:00** todos os
+      dias. São horários diferentes em cada fonte; confirmar qual está correto antes de publicar
       (`src/data/siteConfig.ts`, campo `hours`).
 - [ ] **Endereço**: "Rua Antônio Rici - Estância Suíça, Serra Negra - SP" não tem número
       informado no site atual. Confirmar número/complemento.
