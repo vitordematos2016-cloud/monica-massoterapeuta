@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.1] - Correção crítica do menu mobile
+
+- Corrigido bug em que o conteúdo da página (avaliações, textos, botões) aparecia "vazando"
+  por entre os itens do menu mobile aberto, com os botões flutuantes (WhatsApp, Minha seleção)
+  sempre visíveis por cima. Causa raiz: o menu era `position: fixed` dentro do `<header>`, que
+  passou a ter `backdrop-filter` (blur) quando o menu abre — isso cria um novo "containing
+  block" para elementos fixos, colapsando a altura do menu para 0px e revelando o conteúdo por
+  trás.
+- Solução: o painel do menu mobile agora é renderizado via `createPortal` direto em
+  `document.body`, totalmente fora do cabeçalho, com fundo sólido opaco e `z-index` acima de
+  todos os elementos flutuantes do site (WhatsApp, Minha seleção, aviso de cookies, painel do
+  carrinho).
+- Aproveitado para adicionar fechamento por tecla Esc e foco preso dentro do menu enquanto
+  aberto (`useFocusTrap`, já usado em modais do site), reforçando a acessibilidade.
+- Versão desktop não foi alterada.
+
 ## [1.0.0] - Primeira publicação
 
 - Criado o pipeline de deploy (`.github/workflows/deploy.yml`): build do projeto e envio de

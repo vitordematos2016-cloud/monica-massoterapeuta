@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Menu, X } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
@@ -6,6 +7,7 @@ import { Logo } from './Logo'
 import { NAV_LINKS } from '../../data/siteConfig'
 import { useActiveSection } from '../../hooks/useActiveSection'
 import { useScrollLock } from '../../hooks/useScrollLock'
+import { useFocusTrap } from '../../hooks/useFocusTrap'
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.id)
 
@@ -13,7 +15,9 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const activeSection = useActiveSection(SECTION_IDS)
+  const menuPanelRef = useRef<HTMLDivElement>(null)
   useScrollLock(isMenuOpen)
+  useFocusTrap(menuPanelRef, isMenuOpen, () => setIsMenuOpen(false))
 
   useEffect(() => {
     function handleScroll() {
@@ -82,28 +86,39 @@ export function Header() {
         </button>
       </Container>
 
-      {isMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-20 z-40 bg-cream flex flex-col">
-          <nav className="flex flex-col gap-1 px-6 py-8" aria-label="Navegação mobile">
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`text-left py-4 text-lg font-serif border-b border-sand-dark transition-colors ${
-                  activeSection === link.id ? 'text-terracotta' : 'text-ink'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
-          <div className="mt-auto px-6 pb-10">
-            <Button onClick={() => handleNavClick('agendamento')} className="w-full">
-              Agendar meu momento
-            </Button>
-          </div>
-        </div>
-      )}
+      {isMenuOpen &&
+        createPortal(
+          <div
+            ref={menuPanelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de navegação"
+            className="fixed inset-x-0 top-20 bottom-0 z-[90] flex flex-col overscroll-contain bg-cream lg:hidden"
+          >
+            <nav
+              className="flex flex-col gap-1 overflow-y-auto px-6 py-8"
+              aria-label="Navegação mobile"
+            >
+              {NAV_LINKS.map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => handleNavClick(link.id)}
+                  className={`text-left py-4 text-lg font-serif border-b border-sand-dark transition-colors ${
+                    activeSection === link.id ? 'text-terracotta' : 'text-ink'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+            <div className="mt-auto px-6 pb-10 pt-4">
+              <Button onClick={() => handleNavClick('agendamento')} className="w-full">
+                Agendar meu momento
+              </Button>
+            </div>
+          </div>,
+          document.body,
+        )}
     </header>
   )
 }
