@@ -14,9 +14,8 @@ export function isValidBrazilianPhone(rawPhone: string): boolean {
   return digits.length === 10 || digits.length === 11
 }
 
-export function isValidFullName(rawName: string): boolean {
-  const trimmed = rawName.trim()
-  return trimmed.length >= 3 && trimmed.includes(' ')
+export function isValidName(rawName: string): boolean {
+  return rawName.trim().length >= 2
 }
 
 export function formatApproximateTime(time: string): string {

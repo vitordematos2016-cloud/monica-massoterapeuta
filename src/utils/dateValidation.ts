@@ -16,3 +16,15 @@ export function formatIsoDateToPtBr(isoDate: string): string {
   const [year, month, day] = isoDate.split('-')
   return `${day}/${month}/${year}`
 }
+
+/** Exige uma data preenchida, válida e não anterior a hoje (comparação em horário local). */
+export function isValidFutureOrTodayDate(isoDate: string): boolean {
+  if (!isoDate) return false
+  const selectedDate = new Date(`${isoDate}T00:00:00`)
+  if (Number.isNaN(selectedDate.getTime())) return false
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  return selectedDate >= today
+}

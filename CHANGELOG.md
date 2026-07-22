@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.2] - Correção: botão "Enviar solicitação" ficava travado
+
+- **Causa real**: a validação de nome exigia duas palavras (nome + sobrenome,
+  `includes(' ')`). Quem preenchia só um nome (bem comum) tinha o botão bloqueado sem nenhuma
+  explicação visível — e, por estar desabilitado, o clique não disparava nada, então a
+  mensagem de erro nunca aparecia.
+- Validação de nome simplificada para exigir apenas 2+ caracteres preenchidos, sem exigir
+  sobrenome.
+- **Data de preferência** e **Período** passaram a ser campos obrigatórios (antes eram
+  opcionais), com validação de data feita por comparação de objetos `Date` em horário local
+  (evita o bug clássico de fuso horário ao converter string ISO em data).
+- Erros de nome, telefone, data e período agora também aparecem assim que o campo perde o foco
+  (`onBlur`), e não somente depois de tentar enviar — dá feedback imediato sobre o que falta,
+  mesmo com o botão principal desabilitado.
+
 ## [1.1.1] - Correção crítica: WhatsApp não abria ao enviar a solicitação
 
 - O envio pelo WhatsApp tinha um atraso artificial (`setTimeout` de 500ms/300ms) entre o clique
